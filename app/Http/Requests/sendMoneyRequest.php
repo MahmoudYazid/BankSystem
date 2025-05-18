@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
+class sendMoneyRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        $payload = JWTAuth::getPayload();
+        $userId = $payload->get('user_id');
+        return User::where('id', $userId)->exists();
+    }
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+        "to_account_id"=> "required | numeric",
+        "from_account_id"=> "required | numeric",
+        "amount"=> "required | string",
+        "desc"=> "required | string",
+       
+        ];
+    }
+}
